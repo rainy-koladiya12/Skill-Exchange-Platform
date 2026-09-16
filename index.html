@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillBridge — Peer-to-Peer Student Skill Exchange</title>
+  <meta name="description" content="Exchange skills, teach what you love, and learn new passions from fellow students. A peer-to-peer student skill exchange platform.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- =========================================================
+       1. NAVIGATION BAR
+       Header with brand, main section navigation, and auth actions
+       ========================================================= -->
+  <header class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#" class="brand-logo" onclick="navigateTo('home'); return false;">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">Skill<strong>Bridge</strong></span>
+      </a>
+
+      <!-- Mobile Hamburger Toggle -->
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <!-- Nav Links -->
+      <nav class="nav-menu" id="navMenu">
+        <ul class="nav-links">
+          <li><a href="#home" class="nav-link active" data-target="home">Home</a></li>
+          <li><a href="#skills" class="nav-link" data-target="skills">Skills</a></li>
+          <li><a href="#requests" class="nav-link" data-target="requests">Requests</a></li>
+          <li><a href="#sessions" class="nav-link" data-target="sessions">Sessions</a></li>
+          <li><a href="#reviews" class="nav-link" data-target="reviews">Reviews</a></li>
+        </ul>
+
+        <!-- Authentication & Profile Actions -->
+        <div class="nav-auth" id="navAuth">
+          <!-- Shown when Logged Out (Default in Phase 1) -->
+          <div class="auth-guest" id="authGuest">
+            <button class="btn btn-outline" id="btnLoginNav" onclick="openAuthModal('login')">Log In</button>
+            <button class="btn btn-primary" id="btnSignupNav" onclick="openAuthModal('signup')">Sign Up</button>
+          </div>
+
+          <!-- Shown when Logged In (Populated in Phase 2) -->
+          <div class="auth-user hidden" id="authUser">
+            <div class="user-pill" onclick="openProfileModal()">
+              <span class="user-avatar" id="navUserAvatar">U</span>
+              <span class="user-name" id="navUserName">User Name</span>
+            </div>
+            <button class="btn btn-sm btn-outline" id="btnLogoutNav" onclick="logoutUser()">Log Out</button>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- =========================================================
+       2. TOAST NOTIFICATIONS
+       Lightweight floating notifications for immediate feedback
+       ========================================================= -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- =========================================================
+       3. MAIN CONTENT MODULE CONTAINERS
+       ========================================================= -->
+  <main class="main-content">
+
+    <!-- MODULE 1: HOME & HERO SECTION -->
+    <section class="section active" id="section-home">
+      <!-- Hero Banner -->
+      <div class="hero-wrapper">
+        <div class="hero-container">
+          <div class="hero-content">
+            <span class="hero-badge">🎓 Student Skill Exchange Platform</span>
+            <h1 class="hero-title">
+              Teach what you love, <br>
+              <span class="gradient-text">learn what you crave.</span>
+            </h1>
+            <p class="hero-description">
+              Connect with fellow students to swap knowledge directly. Master coding, illustration, video editing, dance, languages, and more — completely free through peer exchange.
+            </p>
+            <div class="hero-actions">
+              <button class="btn btn-primary btn-lg" onclick="navigateTo('skills')">
+                <span>Browse Skills</span>
+                <span class="btn-arrow">→</span>
+              </button>
+              <button class="btn btn-secondary btn-lg" onclick="handleShareSkillClick()">
+                <span>+ Offer a Skill</span>
+              </button>
+            </div>
+
+            <!-- Highlights / Metrics -->
+            <div class="hero-stats">
+              <div class="stat-item">
+                <span class="stat-number" id="statSkillsCount">12+</span>
+                <span class="stat-label">Active Skills</span>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat-item">
+                <span class="stat-number" id="statSessionsCount">30+</span>
+                <span class="stat-label">Sessions Done</span>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat-item">
+                <span class="stat-number" id="statRatingAvg">4.9 ★</span>
+                <span class="stat-label">Avg Feedback</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-visual">
+            <div class="hero-card-preview">
+              <div class="preview-header">
+                <div class="preview-dot red"></div>
+                <div class="preview-dot yellow"></div>
+                <div class="preview-dot green"></div>
+                <span class="preview-tag">Live Exchange</span>
+              </div>
+              <div class="preview-body">
+                <div class="exchange-bubble teacher-bubble">
+                  <div class="bubble-avatar">🎨</div>
+                  <div class="bubble-text">
+                    <strong>Aria (Design)</strong>
+                    <p>“I can teach Figma UI/UX prototyping in 2 sessions!”</p>
+                  </div>
+                </div>
+                <div class="exchange-bubble swap-icon">⇄</div>
+                <div class="exchange-bubble learner-bubble">
+                  <div class="bubble-avatar">💻</div>
+                  <div class="bubble-text">
+                    <strong>Rohan (CS)</strong>
+                    <p>“Awesome! I will teach Python automation in return.”</p>
+                  </div>
+                </div>
+              </div>
+              <div class="preview-footer">
+                <span class="badge badge-success">✓ Session Confirmed</span>
+                <span class="preview-time">Today, 5:00 PM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How It Works Section -->
+      <div class="container section-spacer">
+        <div class="section-heading text-center">
+          <h2 class="section-title">How SkillBridge Works</h2>
+          <p class="section-subtitle">A simple 4-step loop to learn and teach anything</p>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-icon">1</div>
+            <h3>List Your Skill</h3>
+            <p>Post what you are good at (coding, drawing, playing guitar, speaking French) with your experience level.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-icon">2</div>
+            <h3>Send / Accept Requests</h3>
+            <p>Find a skill you want to learn, choose a convenient date and time, and send a learning request.</p>
+          </div>
+          <div class="step-card">
+            <div class="step-icon">3</div>
+            <h3>Meet & Learn</h3>
+            <p>Once accepted, an active session is auto-scheduled. Connect, share knowledge, and level up!</p>
+          </div>
+          <div class="step-card">
+            <div class="step-icon">4</div>
+            <h3>Leave a Review</h3>
+            <p>Complete the session and leave transparent star ratings to build your campus reputation.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULE 2: SKILLS SECTION -->
+    <section class="section" id="section-skills">
+      <div class="container">
+        <div class="section-header-row">
+          <div>
+            <h2 class="section-title">Explore Skills</h2>
+            <p class="section-subtitle">Discover skills offered by fellow students or share one of your own</p>
+          </div>
+          <button class="btn btn-primary" id="btnAddSkill" onclick="openAddSkillModal()">
+            + Add New Skill
+          </button>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="toolbar-card">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="skillSearchInput" placeholder="Search by skill name, description, or teacher..." aria-label="Search skills">
+          </div>
+          <div class="filter-group">
+            <select id="skillCategoryFilter" class="form-select" aria-label="Filter by category">
+              <option value="all">All Categories</option>
+              <option value="Coding">Coding & Tech</option>
+              <option value="Drawing">Drawing & Art</option>
+              <option value="Editing">Video & Photo Editing</option>
+              <option value="Dancing">Dance & Fitness</option>
+              <option value="Music">Music & Instruments</option>
+              <option value="Languages">Languages</option>
+              <option value="Academics">Academics & Science</option>
+              <option value="Other">Other Skills</option>
+            </select>
+
+            <select id="skillLevelFilter" class="form-select" aria-label="Filter by level">
+              <option value="all">All Levels</option>
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Skills Cards Grid Container (Populated in Phase 3) -->
+        <div class="cards-grid" id="skillsContainer">
+          <!-- Placeholder / Initial Content -->
+          <div class="empty-state">
+            <div class="empty-icon">🎨</div>
+            <h3>Skills Grid Ready</h3>
+            <p>Skills added by users will appear here in Phase 3 with search, category filtering, and request options.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULE 3: REQUESTS SECTION -->
+    <section class="section" id="section-requests">
+      <div class="container">
+        <div class="section-header-row">
+          <div>
+            <h2 class="section-title">Learning Requests</h2>
+            <p class="section-subtitle">Manage session invitations sent to you and requests you made to others</p>
+          </div>
+        </div>
+
+        <!-- Tabs: Received vs Sent -->
+        <div class="sub-nav-tabs">
+          <button class="sub-tab-btn active" id="tabReceivedRequests" onclick="switchRequestTab('received')">
+            Received Requests (<span id="countReceivedReqs">0</span>)
+          </button>
+          <button class="sub-tab-btn" id="tabSentRequests" onclick="switchRequestTab('sent')">
+            Sent by Me (<span id="countSentReqs">0</span>)
+          </button>
+        </div>
+
+        <!-- Requests List Container (Populated in Phase 4) -->
+        <div class="requests-list" id="requestsContainer">
+          <div class="empty-state">
+            <div class="empty-icon">📬</div>
+            <h3>Requests Module Ready</h3>
+            <p>Incoming and outgoing session requests with accept/reject controls will be displayed here in Phase 4.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULE 4: SESSIONS SECTION -->
+    <section class="section" id="section-sessions">
+      <div class="container">
+        <div class="section-header-row">
+          <div>
+            <h2 class="section-title">Exchange Sessions</h2>
+            <p class="section-subtitle">Track your upcoming lessons, reschedule dates, and mark sessions completed</p>
+          </div>
+        </div>
+
+        <!-- Filter Sub-Tabs -->
+        <div class="sub-nav-tabs">
+          <button class="sub-tab-btn active" onclick="filterSessions('all')">All Sessions</button>
+          <button class="sub-tab-btn" onclick="filterSessions('upcoming')">Upcoming</button>
+          <button class="sub-tab-btn" onclick="filterSessions('completed')">Completed</button>
+          <button class="sub-tab-btn" onclick="filterSessions('cancelled')">Cancelled</button>
+        </div>
+
+        <!-- Sessions Container (Populated in Phase 5) -->
+        <div class="sessions-list" id="sessionsContainer">
+          <div class="empty-state">
+            <div class="empty-icon">📅</div>
+            <h3>Sessions Module Ready</h3>
+            <p>Accepted requests will automatically create confirmed sessions here in Phase 5.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULE 5: REVIEWS SECTION -->
+    <section class="section" id="section-reviews">
+      <div class="container">
+        <div class="section-header-row">
+          <div>
+            <h2 class="section-title">Community Reviews</h2>
+            <p class="section-subtitle">Read ratings and honest feedback given to student mentors after sessions</p>
+          </div>
+        </div>
+
+        <!-- Reviews Container (Populated in Phase 6) -->
+        <div class="reviews-grid" id="reviewsContainer">
+          <div class="empty-state">
+            <div class="empty-icon">⭐</div>
+            <h3>Reviews Module Ready</h3>
+            <p>Star ratings and student testimonials will appear here in Phase 6.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================================================
+       4. MODALS & POPUPS
+       ========================================================= -->
+
+  <!-- A. Auth Modal (Signup / Login) -->
+  <div class="modal-overlay hidden" id="modalAuth">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal('modalAuth')" aria-label="Close modal">&times;</button>
+      
+      <div class="modal-tabs">
+        <button class="modal-tab-btn active" id="tabBtnLogin" onclick="toggleAuthMode('login')">Log In</button>
+        <button class="modal-tab-btn" id="tabBtnSignup" onclick="toggleAuthMode('signup')">Sign Up</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="formLogin" class="modal-form" onsubmit="handleLoginSubmit(event)">
+        <div class="form-group">
+          <label for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" class="form-input" placeholder="student@campus.edu" required>
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Log In to SkillBridge</button>
+      </form>
+
+      <!-- Signup Form -->
+      <form id="formSignup" class="modal-form hidden" onsubmit="handleSignupSubmit(event)">
+        <div class="form-group">
+          <label for="signupName">Full Name</label>
+          <input type="text" id="signupName" class="form-input" placeholder="e.g. Alex Morgan" required>
+        </div>
+        <div class="form-group">
+          <label for="signupEmail">College Email</label>
+          <input type="email" id="signupEmail" class="form-input" placeholder="alex@campus.edu" required>
+        </div>
+        <div class="form-group">
+          <label for="signupPassword">Password</label>
+          <input type="password" id="signupPassword" class="form-input" placeholder="At least 6 characters" minlength="6" required>
+        </div>
+        <div class="form-group">
+          <label for="signupBio">Short Bio / Interests</label>
+          <textarea id="signupBio" class="form-input" rows="2" placeholder="e.g. 2nd year CS major, love UI design & sketching"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Create Free Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- B. Profile Modal -->
+  <div class="modal-overlay hidden" id="modalProfile">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal('modalProfile')" aria-label="Close modal">&times;</button>
+      <h3 class="modal-title">My Profile</h3>
+      <p class="modal-subtitle">Update your personal details or manage your account</p>
+
+      <form id="formProfile" class="modal-form" onsubmit="handleProfileUpdateSubmit(event)">
+        <div class="form-group">
+          <label for="profileName">Full Name</label>
+          <input type="text" id="profileName" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label for="profileEmail">Email (Read Only)</label>
+          <input type="email" id="profileEmail" class="form-input" disabled>
+        </div>
+        <div class="form-group">
+          <label for="profileBio">Bio & Interests</label>
+          <textarea id="profileBio" class="form-input" rows="3"></textarea>
+        </div>
+        <div class="form-actions-split">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <button type="button" class="btn btn-danger" onclick="confirmDeleteAccount()">Delete Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- C. Add / Edit Skill Modal -->
+  <div class="modal-overlay hidden" id="modalSkill">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal('modalSkill')" aria-label="Close modal">&times;</button>
+      <h3 class="modal-title" id="skillModalTitle">Add a New Skill</h3>
+      <p class="modal-subtitle">Offer to teach what you know to other students</p>
+
+      <form id="formSkill" class="modal-form" onsubmit="handleSkillFormSubmit(event)">
+        <input type="hidden" id="skillEditId">
+        <div class="form-group">
+          <label for="skillTitle">Skill Title</label>
+          <input type="text" id="skillTitle" class="form-input" placeholder="e.g. Modern Web Development with React" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-half">
+            <label for="skillCategory">Category</label>
+            <select id="skillCategory" class="form-select" required>
+              <option value="">Select Category</option>
+              <option value="Coding">Coding & Tech</option>
+              <option value="Drawing">Drawing & Art</option>
+              <option value="Editing">Video & Photo Editing</option>
+              <option value="Dancing">Dance & Fitness</option>
+              <option value="Music">Music & Instruments</option>
+              <option value="Languages">Languages</option>
+              <option value="Academics">Academics & Science</option>
+              <option value="Other">Other Skills</option>
+            </select>
+          </div>
+          <div class="form-group col-half">
+            <label for="skillLevel">Proficiency Level</label>
+            <select id="skillLevel" class="form-select" required>
+              <option value="Beginner">Beginner Friendly</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="skillDescription">Description & What You Will Teach</label>
+          <textarea id="skillDescription" class="form-input" rows="3" placeholder="Outline what will be covered in a 45-60 minute exchange session..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="btnSaveSkill">Save Skill</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- D. Request Learning Session Modal -->
+  <div class="modal-overlay hidden" id="modalRequest">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal('modalRequest')" aria-label="Close modal">&times;</button>
+      <h3 class="modal-title">Request a Session</h3>
+      <p class="modal-subtitle" id="requestModalSubtitle">Ask the mentor for a peer learning slot</p>
+
+      <form id="formRequest" class="modal-form" onsubmit="handleRequestFormSubmit(event)">
+        <input type="hidden" id="requestSkillId">
+        <input type="hidden" id="requestEditId">
+        <div class="form-group">
+          <label>Selected Skill</label>
+          <input type="text" id="requestSkillTitle" class="form-input" readonly>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-half">
+            <label for="requestDate">Preferred Date</label>
+            <input type="date" id="requestDate" class="form-input" required>
+          </div>
+          <div class="form-group col-half">
+            <label for="requestTime">Preferred Time</label>
+            <input type="time" id="requestTime" class="form-input" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="requestMessage">Note to Mentor</label>
+          <textarea id="requestMessage" class="form-input" rows="3" placeholder="Hi! I would love to learn basics of this skill. I can also exchange knowledge in..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Send Learning Request</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- E. Reschedule Session Modal -->
+  <div class="modal-overlay hidden" id="modalReschedule">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal('modalReschedule')" aria-label="Close modal">&times;</button>
+      <h3 class="modal-title">Reschedule Session</h3>
+      <p class="modal-subtitle">Pick a new date and time for this session</p>
+
+      <form id="formReschedule" class="modal-form" onsubmit="handleRescheduleFormSubmit(event)">
+        <input type="hidden" id="rescheduleSessionId">
+        <div class="form-row">
+          <div class="form-group col-half">
+            <label for="rescheduleDate">New Date</label>
+            <input type="date" id="rescheduleDate" class="form-input" required>
+          </div>
+          <div class="form-group col-half">
+            <label for="rescheduleTime">New Time</label>
+            <input type="time" id="rescheduleTime" class="form-input" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Confirm Reschedule</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- F. Add / Edit Review Modal -->
+  <div class="modal-overlay hidden" id="modalReview">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeModal('modalReview')" aria-label="Close modal">&times;</button>
+      <h3 class="modal-title" id="reviewModalTitle">Leave a Review</h3>
+      <p class="modal-subtitle">How was your learning session? Rate and share feedback</p>
+
+      <form id="formReview" class="modal-form" onsubmit="handleReviewFormSubmit(event)">
+        <input type="hidden" id="reviewSessionId">
+        <input type="hidden" id="reviewEditId">
+        <div class="form-group text-center">
+          <label>Rating (1 to 5 Stars)</label>
+          <div class="star-rating-select" id="starRatingSelect">
+            <span class="star-btn" data-val="1">★</span>
+            <span class="star-btn" data-val="2">★</span>
+            <span class="star-btn" data-val="3">★</span>
+            <span class="star-btn" data-val="4">★</span>
+            <span class="star-btn" data-val="5">★</span>
+          </div>
+          <input type="hidden" id="reviewRatingVal" value="5" required>
+        </div>
+        <div class="form-group">
+          <label for="reviewComment">Your Feedback & Experience</label>
+          <textarea id="reviewComment" class="form-input" rows="3" placeholder="Great explanations, very patient, and helped me understand the fundamentals!" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Submit Review</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       5. FOOTER
+       Quick reset and seed helper for viva / demo testing
+       ========================================================= -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="logo-icon">⚡</span>
+        <span>Skill<strong>Bridge</strong> Platform</span>
+        <p class="footer-caption">Peer-to-Peer Student Knowledge Exchange • Pure HTML, CSS & JavaScript with LocalStorage</p>
+      </div>
+      <div class="footer-demo-controls">
+        <button class="btn btn-sm btn-outline" onclick="seedDemoData()">⚡ Load Sample Demo Data</button>
+        <button class="btn btn-sm btn-outline text-danger" onclick="resetAllData()">🗑 Reset All Data</button>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
